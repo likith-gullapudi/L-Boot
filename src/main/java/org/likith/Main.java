@@ -10,6 +10,7 @@ import org.likith.demo.TestControllerImpl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -24,5 +25,11 @@ public class Main {
         server.setContext(context);
 
         server.start();
+
+        // ADD THIS: Shutdown hook for graceful cleanup
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            LStartupLogger.logInfo("Shutting down server...");
+            server.shutdown();
+        }));
     }
 }
