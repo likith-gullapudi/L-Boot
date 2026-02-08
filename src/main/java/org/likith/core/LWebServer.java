@@ -31,6 +31,8 @@ public class LWebServer {
     @LValue("server.threadpool.size")
     private int threadPoolSize = 10; // Default 10 threads
 
+    private LExceptionHandlerManager exceptionHandlerManager;
+
     private static class RouteHandler {
         Object bean;
         Method method;
@@ -51,6 +53,7 @@ public class LWebServer {
 
     public void setContext(LBootContext context) {
         this.context = context;
+        this.exceptionHandlerManager=new LExceptionHandlerManager(context);
     }
 
     public void start() throws Exception {
@@ -105,13 +108,65 @@ public class LWebServer {
                 }
 
             } catch (InvocationTargetException e) {
-                e.printStackTrace();
-                statusCode = 500;
-                response = "500 Internal Server Error: " + e.getCause().getMessage();
+                // The actual exception thrown by the controller method
+                Throwable cause = e.getCause();
+
+                if (cause instanceof Exception) {
+                    Exception actualException = (Exception) cause;
+
+                    // Try to handle using exception handler
+                    if (exceptionHandlerManager.hasHandlerFor(actualException)) {
+                        Object handlerResult = exceptionHandlerManager.handleException(actualException);
+
+                        if (handlerResult != null) {
+                            if (handlerResult instanceof String) {
+                                response = (String) handlerResult;
+                            } else {
+                                response = converter.toJson(handlerResult);
+                            }
+
+                            // Get status code from exception (you can enhance this)
+                            statusCode = getStatusCodeFromException(actualException);
+                        } else {
+                            // Handler returned null
+                            statusCode = 500;
+                            response = "500 Internal Server Error";
+                        }
+                    } else {
+                        // No handler found, use default error response
+                        e.printStackTrace();
+                        statusCode = 500;
+                        response = "500 Internal Server Error: " + cause.getMessage();
+                    }
+                } else {
+                    e.printStackTrace();
+                    statusCode = 500;
+                    response = "500 Internal Server Error";
+                }
+
             } catch (Exception e) {
-                e.printStackTrace();
-                statusCode = 500;
-                response = "500 Internal Server Error: " + e.getMessage();
+                // Try to handle using exception handler
+                if (exceptionHandlerManager.hasHandlerFor(e)) {
+                    Object handlerResult = exceptionHandlerManager.handleException(e);
+
+                    if (handlerResult != null) {
+                        if (handlerResult instanceof String) {
+                            response = (String) handlerResult;
+                        } else {
+                            response = converter.toJson(handlerResult);
+                        }
+
+                        statusCode = getStatusCodeFromException(e);
+                    } else {
+                        statusCode = 500;
+                        response = "500 Internal Server Error";
+                    }
+                } else {
+                    // No handler, use default
+                    e.printStackTrace();
+                    statusCode = 500;
+                    response = "500 Internal Server Error: " + e.getMessage();
+                }
             }
 
             exchange.sendResponseHeaders(statusCode, response.getBytes().length);
@@ -187,6 +242,35 @@ public class LWebServer {
 
         return null;
     }
+    /**
+     * Get HTTP status code based on exception type
+     * Determines status code from exception class name patterns
+     */
+    private int getStatusCodeFromException(Exception exception) {
+        String exceptionName = exception.getClass().getSimpleName();
+
+        // Common patterns for HTTP status codes
+        if (exceptionName.contains("NotFound")) {
+            return 404;
+        } else if (exceptionName.contains("AlreadyExists") || exceptionName.contains("Conflict")) {
+            return 409;
+        } else if (exceptionName.contains("BadRequest") || exceptionName.contains("Invalid")) {
+            return 400;
+        } else if (exceptionName.contains("Unauthorized")) {
+            return 401;
+        } else if (exceptionName.contains("Forbidden")) {
+            return 403;
+        }
+
+        return 500; // Default to internal server error
+    }
+
+
+
+
+
+
+
 
     // Graceful shutdown method
     public void shutdown() {

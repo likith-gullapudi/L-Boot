@@ -15,6 +15,8 @@ public class LParameterResolver {
     @LAutowired
     private static Gson converter;
 
+    private LValidatorEnginer validator;
+
     public static Object[] resolveParameters(
             Method method,
             HttpExchange exchange,
@@ -31,6 +33,8 @@ public class LParameterResolver {
             if (param.isAnnotationPresent(LRequestBody.class)) {
                 String body = new String(exchange.getRequestBody().readAllBytes());
                 args[i] = converter.fromJson(body, param.getType());
+                LValidatorEnginer.validate(args[i]);
+
             }
             // Handle @LPathVariable
             else if (param.isAnnotationPresent(LPathVariable.class)) {

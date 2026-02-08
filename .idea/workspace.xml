@@ -6,16 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="ded87145-43da-4d65-98c6-4ee6937a1e85" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/likith/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/likith/demo/IpaymentService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/likith/demo/PaypalService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/likith/demo/StripeService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/likith/demo/TestController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/likith/demo/TestControllerImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/likith/demo/UserController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/likith/model/User.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/likith/scanner/LPackageScanner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/likith/scanner/LPackageScanner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/likith/core/LParameterResolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/likith/core/LParameterResolver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/likith/core/LWebServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/likith/core/LWebServer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,6 +17,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -118,7 +111,7 @@
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/likith/core/LWebServer.java</url>
-          <line>64</line>
+          <line>67</line>
           <option name="timeStamp" value="20" />
         </line-breakpoint>
       </breakpoints>
